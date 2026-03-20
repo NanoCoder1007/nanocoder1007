@@ -1,0 +1,234 @@
+/* 全局样式重置与基础设置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    color: #333333;
+    line-height: 1.6;
+    padding: 2rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* 调整为顶部开始，适配更多内容 */
+}
+
+/* 容器样式 - 控制整体宽度和留白 */
+.container {
+    max-width: 800px;
+    width: 100%;
+    padding: 2rem;
+    text-align: center;
+}
+
+/* 头像样式 */
+.avatar {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    margin: 0 auto 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    color: #666666;
+    border: 2px solid #e0e0e0;
+}
+
+/* 姓名样式 */
+.name {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #000000;
+}
+
+/* 个人简介样式 */
+.bio {
+    font-size: 1.1rem;
+    color: #666666;
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.8;
+}
+
+/* 社交链接样式 */
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 3rem; /* 增加间距，区分项目模块 */
+    flex-wrap: wrap;
+}
+
+.social-link {
+    text-decoration: none;
+    color: #333333;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid #333333;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+/* 项目模块样式 */
+.projects-section {
+    margin: 3rem auto;
+    max-width: 700px;
+    width: 100%;
+    text-align: left;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #000000;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.projects-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.project-card {
+    background-color: #f9f9f9;
+    padding: 1.2rem;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.project-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #000000;
+    margin-bottom: 0.8rem;
+}
+
+.project-desc {
+    font-size: 0.95rem;
+    color: #666666;
+    margin-bottom: 1rem;
+    line-height: 1.7;
+}
+
+.project-link {
+    text-decoration: none;
+    color: #333333;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease;
+}
+
+.project-link:hover {
+    border-bottom: 1px solid #333333;
+}
+
+.doc-link {
+    text-decoration: none;
+    color: #333333;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease;
+    text-align: end;
+}
+
+.doc-link:hover {
+    border-bottom: 1px solid #333333;
+}
+
+/* 联系方式样式 */
+.contact {
+    font-size: 1rem;
+    color: #666666;
+    padding-top: 2rem;
+    margin-top: 2rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+.contact a {
+    color: #333333;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease;
+}
+
+.contact a:hover {
+    border-bottom: 1px solid #333333;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    .container {
+        padding: 1rem;
+    }
+
+    .avatar {
+        width: 140px;
+        height: 140px;
+        font-size: 3rem;
+    }
+
+    .name {
+        font-size: 2rem;
+    }
+
+    .bio {
+        font-size: 1rem;
+        padding: 0 1rem;
+    }
+
+    .social-links {
+        gap: 1rem;
+    }
+
+    .section-title {
+        font-size: 1.6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .social-link {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .contact {
+        font-size: 0.9rem;
+    }
+
+    .project-card {
+        padding: 1rem;
+    }
+
+    .project-title {
+        font-size: 1.1rem;
+    }
+}
