@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5bed628c.js";
+            window.path_to_searchindex_js = "searchindex-e9d29217.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-3bcb1965.js"></script>
@@ -190,19 +190,11 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 <pre><code class="language-bash">rustc --version
 cargo --version
 </code></pre>
-<h2 id="22-克隆并构建项目"><a class="header" href="#22-克隆并构建项目">2.2 克隆并构建项目</a></h2>
-<pre><code class="language-bash"># 克隆仓库
-git clone https://github.com/NanoCoder1007/LiteML.git
-cd LiteML
-
-# 以 Release 模式编译（性能最优）
-cargo build --release
-
-# 或直接通过 Cargo 运行（开发调试）
-cargo run -- test.liteml
+<h2 id="22-安装与验证"><a class="header" href="#22-安装与验证">2.2 安装与验证</a></h2>
+<pre><code class="language-bash">cargo install liteml
 </code></pre>
-<p>编译完成后，生成的二进制文件位于：</p>
-<pre><code>target/release/liteml
+<p>验证安装：</p>
+<pre><code>liteml
 </code></pre>
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="语法规范"><a class="header" href="#语法规范">语法规范</a></h1>

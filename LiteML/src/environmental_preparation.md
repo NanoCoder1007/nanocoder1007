@@ -12,22 +12,14 @@ rustc --version
 cargo --version
 ```
 
-## 2.2 克隆并构建项目
+## 2.2 安装与验证
 ```bash
-# 克隆仓库
-git clone https://github.com/NanoCoder1007/LiteML.git
-cd LiteML
-
-# 以 Release 模式编译（性能最优）
-cargo build --release
-
-# 或直接通过 Cargo 运行（开发调试）
-cargo run -- test.liteml
+cargo install liteml
 ```
 
-编译完成后，生成的二进制文件位于：
+验证安装：
 ```
-target/release/liteml
+liteml
 ```
 
 ---
