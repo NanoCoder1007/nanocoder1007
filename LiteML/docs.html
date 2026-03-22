@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LiteML 文档</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script src="https://cdn.bootcdn.net/ajax/libs/marked/4.3.0/marked.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: '#14B8A6',
+                    neutral: '#F3F4F6',
+                    dark: '#111827',
+                },
+                borderRadius: {
+                    xl: '1rem',
+                    '2xl': '1.5rem'
+                }
+            }
+        }
+    }
+</script>
+
+<style>
+    body {
+        background: #fff;
+        color: #111827;
+        font-family: Inter, PingFang SC, Microsoft YaHei, sans-serif;
+    }
+    .markdown-body {
+        line-height: 1.7;
+        color: #111827;
+    }
+    .markdown-body h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 2.5rem 0 1.2rem;
+    }
+    .markdown-body h2 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin: 1.8rem 0 0.9rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    .markdown-body h3 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin: 1.5rem 0 0.7rem;
+    }
+    .markdown-body p {
+        margin: 0.8rem 0;
+        color: #111827;
+    }
+    .markdown-body ul,
+    .markdown-body ol {
+        margin: 0.8rem 0 0.8rem 1.4rem;
+        color: #111827;
+    }
+    .markdown-body li {
+        margin-bottom: 0.4rem;
+    }
+    .markdown-body a {
+        color: #14B8A6;
+        font-weight: 500;
+    }
+    .markdown-body blockquote {
+        border-left: 4px solid #14B8A6;
+        padding: 0.8rem 1rem;
+        background: #f9fafb;
+        border-radius: 0 8px 8px 0;
+        color: #111827;
+    }
+    .markdown-body pre {
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 1rem;
+        margin: 1rem 0;
+        overflow-x: auto;
+    }
+    .markdown-body code {
+        color: #14B8A6;
+        font-weight: 500;
+    }
+    .markdown-body table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+        background: #fff;
+    }
+    .markdown-body th,
+    .markdown-body td {
+        border: 1px solid #e5e7eb;
+        padding: 0.6rem 0.8rem;
+        text-align: left;
+    }
+    .markdown-body th {
+        background: #f9fafb;
+        font-weight: 600;
+    }
+    .scrollbar-thin::-webkit-scrollbar { width: 6px; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+
+    /* 嵌套目录层级样式（重点优化） */
+    .toc-container { margin-bottom: 0.5rem; }
+    .toc-level-1 { padding-left: 0px; font-weight: 600; display: block; }
+    .toc-level-2 { padding-left: 16px; display: block; }
+    .toc-level-3 { padding-left: 32px; font-size: 0.9em; display: block; }
+    .toc-link { display: block; py-1.5 px-2 rounded-xl; hover:bg-gray-100; text-decoration: none; color: inherit; }
+    .toc-link:hover { background: #f3f4f6; }
+    /* 隐藏文档内自带标题（核心） */
+    .markdown-body .doc-internal-heading { display: none; }
+</style>
+
+<body>
+<header class="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-40 rounded-b-2xl">
+    <div class="px-4 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <i class="fa fa-book text-primary"></i>
+            <span class="font-bold text-lg">LiteML 文档</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <button id="toggleSidebar" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+                <i class="fa fa-bars"></i>
+            </button>
+            <a href="homepage.html" class="bg-primary text-white px-4 py-1.5 rounded-xl hover:bg-teal-600 transition">
+                首页
+            </a>
+            <button id="refreshConfig" class="p-2 rounded-lg hover:bg-gray-100" title="刷新文档配置">
+                <i class="fa fa-refresh text-primary"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+<div class="pt-16 flex min-h-screen">
+    <aside id="sidebar" class="fixed top-16 left-0 bottom-0 w-64 bg-white border-r border-gray-200 transform -translate-x-full md:translate-x-0 transition z-40 overflow-y-auto scrollbar-thin rounded-r-2xl">
+        <div class="p-4">
+            <div class="relative mb-5">
+                <input id="search" class="w-full border border-gray-200 rounded-xl px-3 py-2 pl-8 bg-white" placeholder="搜索…">
+                <i class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+            </div>
+            <!-- 嵌套目录容器 -->
+            <div id="toc" class="text-sm space-y-1"></div>
+        </div>
+    </aside>
+
+    <div id="overlay" class="fixed inset-0 bg-black/10 z-30 hidden md:hidden"></div>
+
+    <main class="flex-1 md:ml-64 p-6">
+        <div class="max-w-4xl mx-auto bg-white border border-gray-200 rounded-2xl p-6 md:p-8">
+            <div id="content" class="markdown-body">
+                <div class="flex justify-center py-16">
+                    <i class="fa fa-circle-o-notch fa-spin text-primary text-xl"></i>
+                    <span class="ml-2">加载中…</span>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    const sidebar = document.getElementById('sidebar')
+    const overlay = document.getElementById('overlay')
+    const content = document.getElementById('content')
+    const toc = document.getElementById('toc')
+    const refreshConfigBtn = document.getElementById('refreshConfig')
+
+    // 侧边栏切换逻辑
+    document.getElementById('toggleSidebar').onclick = () => {
+        sidebar.classList.toggle('-translate-x-full')
+        overlay.classList.toggle('hidden')
+    }
+    overlay.onclick = () => {
+        sidebar.classList.add('-translate-x-full')
+        overlay.classList.add('hidden')
+    }
+
+    // 配置文件路径（可修改）
+    const DOC_CONFIG_PATH = 'docs/latest/doc-config.json';
+    let docConfig = null;
+
+    /**
+     * 加载动态配置文件（支持嵌套章节配置）
+     */
+    async function loadDocConfig() {
+        try {
+            const response = await fetch(DOC_CONFIG_PATH, {
+                cache: 'no-cache',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (!response.ok) throw new Error(`配置加载失败（状态码：${response.status}）`);
+            docConfig = await response.json();
+
+            // 验证配置格式：根节点为数组，支持嵌套（children字段）
+            if (!Array.isArray(docConfig)) throw new Error('配置必须是数组格式');
+            return docConfig;
+        } catch (error) {
+            console.error('配置加载错误：', error);
+            content.innerHTML = `
+                <div class="py-10 text-center text-red-500">
+                    <i class="fa fa-exclamation-circle text-2xl mb-2"></i>
+                    <p>文档配置加载失败</p>
+                    <p class="text-sm mt-2 text-gray-500">${error.message}</p>
+                </div>
+            `;
+            throw error;
+        }
+    }
+
+    /**
+     * 过滤文档内自带标题（核心：不显示文件内的h1/h2/h3）
+     * @param {string} markdownText - 原始Markdown文本
+     * @returns 过滤后（移除所有标题）的文本
+     */
+    function filterInternalHeadings(markdownText) {
+        // 正则匹配Markdown标题（# 到 ###），替换为空，保留内容
+        return markdownText.replace(/^#{1,3}\s+.+\n+/gm, '');
+    }
+
+    /**
+     * 递归加载嵌套章节文档（一级/二级/三级）
+     * @param {array} config - 章节配置（支持children嵌套）
+     * @param {number} level - 章节层级（1/2/3）
+     * @returns 合并后的Markdown内容
+     */
+    async function loadNestedDocs(config, level = 1) {
+        let combinedContent = '';
+        for (const item of config) {
+            // 跳过无路径的章节（仅作为目录分组，无对应文档）
+            if (!item.path) {
+                // 仅添加标题，无内容
+                combinedContent += `${'#'.repeat(level)} ${item.title}\n\n`;
+            } else {
+                try {
+                    const response = await fetch(item.path);
+                    let text = '';
+                    if (response.ok) {
+                        text = await response.text();
+                        // 过滤文档内自带标题，仅保留正文
+                        text = filterInternalHeadings(text);
+                    } else {
+                        text = `> ⚠️ 文档加载失败（状态码：${response.status}）`;
+                    }
+                    // 添加当前层级标题 + 过滤后的正文
+                    combinedContent += `${'#'.repeat(level)} ${item.title}\n\n${text}\n\n`;
+                } catch (error) {
+                    combinedContent += `${'#'.repeat(level)} ${item.title}\n\n> ⚠️ 文档加载出错：${error.message}\n\n`;
+                }
+            }
+            // 递归加载子章节（如果有）
+            if (item.children && Array.isArray(item.children) && item.children.length > 0) {
+                combinedContent += await loadNestedDocs(item.children, level + 1);
+            }
+        }
+        return combinedContent;
+    }
+
+    /**
+     * 动态加载嵌套文档并渲染
+     */
+    async function loadNestedDocsByConfig() {
+        content.innerHTML = `<div class="flex justify-center py-16"><i class="fa fa-circle-o-notch fa-spin text-primary"></i> 加载中…</div>`;
+        toc.innerHTML = '';
+
+        try {
+            if (!docConfig) await loadDocConfig();
+            // 递归加载所有嵌套章节
+            const combinedContent = await loadNestedDocs(docConfig);
+            // 渲染Markdown（给文档内可能残留的标题添加隐藏类）
+            let renderedHtml = marked.parse(combinedContent, {
+                highlight: code => hljs.highlightAuto(code).value
+            });
+            // 给所有渲染后的标题添加隐藏类（双重保险，确保不显示文件内标题）
+            renderedHtml = renderedHtml.replace(/<h([1-3])/g, '<h$1 class="doc-internal-heading"');
+            content.innerHTML = renderedHtml;
+
+            // 构建嵌套目录
+            buildNestedToc(docConfig);
+
+        } catch (error) {
+            content.innerHTML = `
+                <div class="py-10 text-center text-red-500">
+                    <i class="fa fa-exclamation-circle text-2xl mb-2"></i>
+                    <p>文档加载失败</p>
+                    <p class="text-sm mt-2 text-gray-500">${error.message}</p>
+                </div>
+            `;
+        }
+    }
+
+    /**
+     * 递归构建嵌套目录（和章节层级对应）
+     * @param {array} config - 章节配置
+     * @param {number} level - 目录层级
+     * @param {HTMLElement} parent - 父目录容器
+     */
+    function buildNestedToc(config, level = 1, parent = toc) {
+        config.forEach(item => {
+            // 生成唯一ID（避免重复）
+            const id = item.title.replace(/\W+/g, '-').toLowerCase() + `-level-${level}`;
+
+            // 创建目录链接
+            const link = document.createElement('a');
+            link.href = `#${id}`;
+            link.className = `toc-link toc-level-${level}`;
+            link.textContent = item.title;
+
+            // 创建目录容器（用于包裹当前链接和子目录）
+            const container = document.createElement('div');
+            container.className = 'toc-container';
+            container.appendChild(link);
+
+            // 递归添加子目录（如果有）
+            if (item.children && Array.isArray(item.children) && item.children.length > 0) {
+                buildNestedToc(item.children, level + 1, container);
+            }
+
+            parent.appendChild(container);
+        });
+    }
+
+    /**
+     * 搜索功能（适配嵌套目录）
+     */
+    document.getElementById('search').addEventListener('input', e => {
+        const query = e.target.value.toLowerCase();
+        document.querySelectorAll('.toc-container').forEach(container => {
+            const link = container.querySelector('.toc-link');
+            // 匹配目录文本，显示/隐藏整个目录容器（包含子目录）
+            const isMatch = link.textContent.toLowerCase().includes(query);
+            container.style.display = isMatch ? 'block' : 'none';
+        });
+    });
+
+    /**
+     * 刷新配置按钮
+     */
+    refreshConfigBtn.addEventListener('click', async () => {
+        docConfig = null;
+        content.innerHTML = `<div class="flex justify-center py-16"><i class="fa fa-circle-o-notch fa-spin text-primary"></i> 刷新配置中…</div>`;
+        await loadNestedDocsByConfig();
+        alert('文档配置已刷新！');
+    });
+
+    /**
+     * 页面初始化
+     */
+    window.addEventListener('load', () => {
+        loadNestedDocsByConfig();
+    });
+</script>
+</body>
+</html>

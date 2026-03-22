@@ -1,0 +1,26 @@
+[
+  {
+    "path": "docs/latest/README.md",
+    "title": "官方文档"
+  },
+  {
+    "path": "docs/latest/intro.md",
+    "title": "简介"
+  },
+  {
+    "path": "docs/latest/dependence_and_install.md",
+    "title": "依赖与安装"
+  },
+  {
+    "path": "docs/latest/quick_start.md",
+    "title": "快速开始"
+  },
+  {
+    "path": "docs/latest/title.md",
+    "title": "标题 title"
+  },
+  {
+    "path": "docs/latest/expansion_guide.md",
+    "title": "扩展指南"
+  }
+]

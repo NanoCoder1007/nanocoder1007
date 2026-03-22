@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiteML - 轻量级标记语言编译器</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome图标 -->
+    <link href="https://fastly.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Tailwind配置：自定义颜色和字体 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // 清新绿色系（主色+辅助色）
+                        primary: '#14B8A6',    // 主绿色（清新青柠绿）
+                        secondary: '#0F766E',  // 深绿色（hover/强调）
+                        dark: '#1E293B',       // 文字主色
+                        light: '#F8FAFC',      // 浅色背景
+                        neutral: '#E2E8F0',    // 边框/分隔色
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'PingFang SC', 'Microsoft YaHei', 'sans-serif'],
+                    },
+                    borderRadius: {
+                        // 统一圆润圆角（基础值放大）
+                        'none': '0',
+                        'sm': '0.375rem',
+                        DEFAULT: '0.75rem',
+                        'md': '1rem',
+                        'lg': '1.25rem',
+                        'xl': '1.5rem',
+                        '2xl': '1.75rem',
+                        '3xl': '2rem',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            /* 文字阴影（仅英雄区使用） */
+            .text-shadow-sm {
+                text-shadow: 0 1px 2px rgba(0,0,0,0.08);
+            }
+            /* 清新绿色渐变背景 */
+            .bg-gradient-green {
+                background: linear-gradient(120deg, #14B8A6 0%, #2DD4BF 100%);
+            }
+            /* 平面风格卡片hover效果 */
+            .card-hover {
+                transition: all 0.2s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 16px rgba(20, 184, 166, 0.1);
+            }
+        }
+    </style>
+</head>
+
+<!-- 整体页面：浅色背景 + 清晰文字 -->
+<body class="bg-light font-sans text-dark antialiased">
+    <!-- 导航栏：固定顶部 + 圆润底部 + 轻微阴影 -->
+    <nav class="bg-white shadow-sm fixed w-full z-50 rounded-b-2xl">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <!-- 品牌Logo -->
+            <a href="#" class="flex items-center gap-2">
+                <i class="fa fa-code text-primary text-2xl"></i>
+                <span class="text-xl font-bold">LiteML</span>
+            </a>
+
+            <!-- 桌面端导航菜单 -->
+            <div class="hidden md:flex gap-8 items-center">
+                <a href="#features" class="text-dark/80 hover:text-primary transition-colors">特性</a>
+                <a href="#installation" class="text-dark/80 hover:text-primary transition-colors">安装</a>
+                <a href="#usage" class="text-dark/80 hover:text-primary transition-colors">使用</a>
+                <a href="#example" class="text-dark/80 hover:text-primary transition-colors">语法示例</a>
+                <a href="docs.html"
+                   class="bg-primary text-white px-5 py-2 rounded-lg hover:bg-secondary transition-colors">
+                    官方文档
+                </a>
+            </div>
+
+            <!-- 移动端菜单按钮 -->
+            <button class="md:hidden text-xl text-dark" id="menuBtn">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- 移动端下拉菜单：圆润底部 + 平面风格 -->
+        <div class="md:hidden hidden bg-white w-full border-t border-neutral rounded-b-2xl" id="mobileMenu">
+            <div class="container mx-auto px-4 py-3 flex flex-col gap-4">
+                <a href="#features" class="py-2 text-dark/80 hover:text-primary transition-colors">特性</a>
+                <a href="#installation" class="py-2 text-dark/80 hover:text-primary transition-colors">安装</a>
+                <a href="#usage" class="py-2 text-dark/80 hover:text-primary transition-colors">使用</a>
+                <a href="#example" class="py-2 text-dark/80 hover:text-primary transition-colors">语法示例</a>
+                <a href="docs.html"
+                   class="bg-primary text-white px-5 py-2 rounded-lg hover:bg-secondary transition-colors text-center">
+                    官方文档
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区：绿色渐变 + 超大圆角 + 清新文字 -->
+    <header class="pt-32 pb-20 bg-gradient-green text-white rounded-b-3xl">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-[clamp(2rem,5vw,3.2rem)] font-bold mb-6 text-shadow-sm">
+                LiteML 0.1.3
+            </h1>
+            <p class="text-[clamp(1rem,2vw,1.2rem)] mb-10 max-w-2xl mx-auto text-white/90 leading-relaxed">
+                用 Rust 实现的极简标记语言，将自定义简约语法快速编译为标准 HTML5 页面，
+                让网页开发更简单、更高效
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#installation" class="bg-white text-primary px-6 py-3 rounded-lg font-medium hover:bg-light transition-colors">
+                    开始使用 <i class="fa fa-arrow-right ml-2"></i>
+                </a>
+                <a href="https://github.com/nanocoder1007/LiteML" class="bg-dark/20 text-white px-6 py-3 rounded-lg font-medium hover:bg-dark/30 transition-colors">
+                    <i class="fa fa-github mr-2"></i> 查看源码
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 核心特性区：平面卡片 + 圆润边角 + 轻微hover效果 -->
+    <section id="features" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-[clamp(1.5rem,3vw,2.2rem)] font-bold text-center mb-16">核心特性</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- 特性卡片1 -->
+                <div class="bg-light p-8 rounded-xl shadow-sm card-hover">
+                    <div class="text-primary text-3xl mb-5">
+                        <i class="fa fa-rocket"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">轻量高效</h3>
+                    <p class="text-dark/70 leading-relaxed">
+                        基于 Rust 构建，编译速度极快，生成的 HTML 代码简洁标准，无冗余内容
+                    </p>
+                </div>
+                <!-- 特性卡片2 -->
+                <div class="bg-light p-8 rounded-xl shadow-sm card-hover">
+                    <div class="text-primary text-3xl mb-5">
+                        <i class="fa fa-code"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">极简语法</h3>
+                    <p class="text-dark/70 leading-relaxed">
+                        自定义简约语法规则，告别繁琐的 HTML 标签，用更少的代码实现相同效果
+                    </p>
+                </div>
+                <!-- 特性卡片3 -->
+                <div class="bg-light p-8 rounded-xl shadow-sm card-hover">
+                    <div class="text-primary text-3xl mb-5">
+                        <i class="fa fa-html5"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">标准兼容</h3>
+                    <p class="text-dark/70 leading-relaxed">
+                        自动生成符合 HTML5 标准的页面，兼容所有现代浏览器，无需手动调整
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 安装区域：圆润卡片 + 平面代码块 -->
+    <section id="installation" class="py-20 bg-light">
+        <div class="container mx-auto px-4">
+            <h2 class="text-[clamp(1.5rem,3vw,2.2rem)] font-bold text-center mb-16">安装 LiteML</h2>
+            <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-sm">
+                <div class="mb-8">
+                    <p class="text-dark/80 mb-4">首先确保您已安装 <span class="font-semibold text-primary">Rust 工具链</span>，然后执行以下命令：</p>
+                    <div class="bg-dark text-white p-4 rounded-lg overflow-x-auto">
+                        <code>cargo install liteml</code>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-dark/80 mb-4">验证安装是否成功：</p>
+                    <div class="bg-dark text-white p-4 rounded-lg overflow-x-auto">
+                        <code>liteml</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 使用方法区：圆润卡片 + 简洁说明 -->
+    <section id="usage" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-[clamp(1.5rem,3vw,2.2rem)] font-bold text-center mb-16">使用方法</h2>
+            <div class="max-w-2xl mx-auto bg-light p-8 rounded-xl shadow-sm">
+                <p class="text-dark/80 mb-6 text-center">基本命令格式：</p>
+                <div class="bg-dark text-white p-4 rounded-lg overflow-x-auto mb-6">
+                    <code>liteml 源文件.liteml [输出文件.html]</code>
+                </div>
+                <div class="text-dark/70 text-center space-y-2">
+                    <p><span class="font-semibold">源文件.liteml</span> - 您编写的 LiteML 语法文件</p>
+                    <p><span class="font-semibold">输出文件.html</span> - 可选参数，指定生成的 HTML 文件路径和名称</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 语法示例区：双卡片对比 + 圆润边角 -->
+    <section id="example" class="py-20 bg-light">
+        <div class="container mx-auto px-4">
+            <h2 class="text-[clamp(1.5rem,3vw,2.2rem)] font-bold text-center mb-16">语法示例</h2>
+            <div class="max-w-2xl mx-auto space-y-8">
+                <!-- LiteML语法卡片 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <h3 class="text-xl font-bold mb-4 text-center">LiteML 语法</h3>
+                    <div class="bg-dark text-white p-4 rounded-lg overflow-x-auto">
+<pre>page {
+    title("标题", level=1);
+    title("副标题", level=2);
+}</pre>
+                    </div>
+                </div>
+                <!-- 编译后HTML卡片 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <h3 class="text-xl font-bold mb-4 text-center">编译后的 HTML5 代码</h3>
+                    <div class="bg-dark text-white p-4 rounded-lg overflow-x-auto">
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;标题&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;标题&lt;/h1&gt;
+    &lt;h2&gt;副标题&lt;/h2&gt;
+    &lt;p&gt;这是一段示例文本，使用LiteML语法编写，
+    语法简洁易懂，编译后生成标准HTML。&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚：深色背景 + 圆润顶部 + 清新绿色点缀 -->
+    <footer class="bg-dark text-white py-12 rounded-t-3xl">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex justify-center gap-8 mb-8 text-xl">
+                <a href="https://github.com/nanocoder1007/LiteML" class="text-white/80 hover:text-primary transition-colors">
+                    <i class="fa fa-github"></i>
+                </a>
+                <a href="docs.html" class="text-white/80 hover:text-primary transition-colors">
+                    <i class="fa fa-book"></i>
+                </a>
+            </div>
+            <p class="mb-3 text-white/90">LiteML - 轻量级标记语言编译器</p>
+            <p class="text-white/50 text-sm">基于 MIT 协议开源 | Copyright © 2026</p>
+        </div>
+    </footer>
+
+    <!-- 基础交互脚本：仅保留必要功能，无多余动画 -->
+    <script>
+        // 移动端菜单切换
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = menuBtn.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
+
+        // 平滑滚动（锚点跳转）
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                    
+                    // 关闭移动端菜单
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        menuBtn.querySelector('i').classList.replace('fa-times', 'fa-bars');
+                    }
+                }
+            });
+        });
+
+        // 导航栏滚动优化（仅调整内边距，无多余动画）
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('py-3');
+                nav.classList.remove('py-4');
+            } else {
+                nav.classList.add('py-4');
+                nav.classList.remove('py-3');
+            }
+        });
+    </script>
+</body>
+</html>
